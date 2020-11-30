@@ -11,6 +11,9 @@ $SourcePath = @('.\Modules', '.\TestFiles')
 # Location of the external ScriptAnalyzer rules for SonarQube (leave empty to not run the scriptAnalyzer/SonarQube extra tests)
 $SonarQubeRules = '..\ScriptAnalyzerRules\Indented.CodingConventions'
 
+# Location of Extracted Module Functions
+$FunctionExtractPath = Join-Path -Path $Env:TEMP -ChildPath "tmpExtraction"
+
 # Default Pester Parameters
 $configuration = [PesterConfiguration]::Default
 $configuration.Run.Exit = $false
@@ -25,7 +28,7 @@ $configuration.Run.Container = $container1
 Invoke-Pester -Configuration $configuration
 
 # Test Set 2 - Extract functions from module files
-$container2 = New-PesterContainer -Path ".\Quality\Function-Extraction.Tests.ps1" -Data @{ SourcePath = $SourcePath }
+$container2 = New-PesterContainer -Path ".\Quality\Function-Extraction.Tests.ps1" -Data @{ SourcePath = $SourcePath; FunctionExtractPath = $FunctionExtractPath }
 $configuration.Run.Container = $container2
 Invoke-Pester -Configuration $configuration
 
