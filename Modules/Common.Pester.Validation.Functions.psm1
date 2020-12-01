@@ -13,7 +13,7 @@ function Convert-Help {
         $helpObject = Convert-Help -HelpComment $helpComment
     #>
     [CmdletBinding()]
-    [OutputType([System.Exception], [System.Void])]
+    [OutputType([HashTable], [System.Exception])]
     param (
         [string]$HelpComment
     )
@@ -290,6 +290,7 @@ function Test-HelpForRequiredTokens {
         throw $_.Exception.Message
 
     }
+
 }
 
 function Test-HelpForUnspecifiedTokens {
@@ -463,118 +464,6 @@ function Test-HelpTokensCountIsValid {
 
 }
 
-function Test-HelpTokensTextIsValid {
-    <#
-        .SYNOPSIS
-        Check that Help Tokens text is valid
-
-        .DESCRIPTION
-        Check that the Help Tokens text is valid by making sure that they its not empty
-
-        .PARAMETER HelpComment
-        A string containing the text of the Help Comment
-
-        .EXAMPLE
-        Test-HelpTokensTextIsValid -HelpComment $helpComment
-    #>
-    [CmdletBinding()]
-    [OutputType([System.Exception], [System.Void])]
-    param (
-        [string]$HelpComment
-    )
-
-    try {
-
-        try {
-            $foundTokens = Convert-Help -HelpComment $HelpComment
-        }
-        catch {
-            throw $_
-        }
-
-        # Check that the help blocks aren't empty
-        foreach ($key in $foundTokens.Keys) {
-
-            $tokenCount = @($foundTokens.$key)
-
-            for ($loop = 0; $loop -lt $tokenCount.Count; $loop++) {
-
-                $token = $foundTokens.$key[$loop]
-
-                if ([string]::IsNullOrWhitespace($token.Text)) {
-
-                    $tokenErrors += "Found '$key' does not have any text. "
-
-                }
-
-            }
-
-        }
-
-        if ($tokenErrors.Count -ge 1) {
-
-            throw $tokenErrors
-
-        }
-
-    }
-    catch {
-
-        throw $_.Exception.Message
-
-    }
-
-}
-
-function Test-ParameterVariablesHaveType {
-    <#
-        .SYNOPSIS
-        Check that all the passed parameters have a type variable set.
-
-        .DESCRIPTION
-        Check that all the passed parameters have a type variable set.
-
-        .PARAMETER ParameterVariables
-        A HashTable containing the parameters from the param block
-
-        .EXAMPLE
-        Test-ParameterVariablesHaveType -ParameterVariables $ParameterVariables
-    #>
-    [CmdletBinding()]
-    [OutputType([System.Exception], [System.Void])]
-    param
-    (
-        [HashTable]$ParameterVariables
-    )
-
-    $variableErrors = @()
-
-    try {
-
-        foreach ($key in $ParameterVariables.Keys) {
-
-            if ([string]::IsNullOrEmpty($ParameterVariables.$key)) {
-
-                $variableErrors += "Parameter '$key' does not have a type defined. "
-
-            }
-
-        }
-
-        if ($variableErrors.Count -ge 1) {
-
-            throw $variableErrors
-        }
-
-    }
-    catch {
-
-        throw $_.Exception.Message
-
-    }
-
-}
-
 function Test-HelpTokensParamsMatch {
     <#
         .SYNOPSIS
@@ -593,7 +482,7 @@ function Test-HelpTokensParamsMatch {
         Test-HelpTokensParamsMatch -HelpComment $helpComment -ParameterVariables $ParameterVariables
     #>
     [CmdletBinding()]
-    [OutputType([System.Exception], [System.Void])]
+    [OutputType([System.Exception], [System.String[]])]
     param (
         [string]$HelpComment,
         [PSCustomObject]$ParameterVariables
@@ -680,6 +569,69 @@ function Test-HelpTokensParamsMatch {
 
 }
 
+function Test-HelpTokensTextIsValid {
+    <#
+        .SYNOPSIS
+        Check that Help Tokens text is valid
+
+        .DESCRIPTION
+        Check that the Help Tokens text is valid by making sure that they its not empty
+
+        .PARAMETER HelpComment
+        A string containing the text of the Help Comment
+
+        .EXAMPLE
+        Test-HelpTokensTextIsValid -HelpComment $helpComment
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Exception], [System.Void])]
+    param (
+        [string]$HelpComment
+    )
+
+    try {
+
+        try {
+            $foundTokens = Convert-Help -HelpComment $HelpComment
+        }
+        catch {
+            throw $_
+        }
+
+        # Check that the help blocks aren't empty
+        foreach ($key in $foundTokens.Keys) {
+
+            $tokenCount = @($foundTokens.$key)
+
+            for ($loop = 0; $loop -lt $tokenCount.Count; $loop++) {
+
+                $token = $foundTokens.$key[$loop]
+
+                if ([string]::IsNullOrWhitespace($token.Text)) {
+
+                    $tokenErrors += "Found '$key' does not have any text. "
+
+                }
+
+            }
+
+        }
+
+        if ($tokenErrors.Count -ge 1) {
+
+            throw $tokenErrors
+
+        }
+
+    }
+    catch {
+
+        throw $_.Exception.Message
+
+    }
+
+}
+
 function Test-ImportModuleIsValid {
     <#
         .SYNOPSIS
@@ -748,3 +700,53 @@ function Test-ImportModuleIsValid {
     }
 
 }
+
+function Test-ParameterVariablesHaveType {
+    <#
+        .SYNOPSIS
+        Check that all the passed parameters have a type variable set.
+
+        .DESCRIPTION
+        Check that all the passed parameters have a type variable set.
+
+        .PARAMETER ParameterVariables
+        A HashTable containing the parameters from the param block
+
+        .EXAMPLE
+        Test-ParameterVariablesHaveType -ParameterVariables $ParameterVariables
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Exception], [System.Void])]
+    param
+    (
+        [HashTable]$ParameterVariables
+    )
+
+    $variableErrors = @()
+
+    try {
+
+        foreach ($key in $ParameterVariables.Keys) {
+
+            if ([string]::IsNullOrEmpty($ParameterVariables.$key)) {
+
+                $variableErrors += "Parameter '$key' does not have a type defined. "
+
+            }
+
+        }
+
+        if ($variableErrors.Count -ge 1) {
+
+            throw $variableErrors
+        }
+
+    }
+    catch {
+
+        throw $_.Exception.Message
+
+    }
+
+}
+

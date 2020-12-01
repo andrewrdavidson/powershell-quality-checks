@@ -13,7 +13,7 @@ Describe "Script Tests" -Tag 'Script' {
 
     if ($PSCmdlet.ParameterSetName -eq "Single") {
         # Over-ride SourcePath with the path of the single file
-        $SourcePath = @(Split-Path -Path (Get-ChildItem -Path $SourceFile).FullName)
+        $SourcePath = @(Split-Path -Path (Get-Item -Path $SourceFile).FullName)
     }
 
     foreach ($scriptPath in $SourcePath) {
@@ -26,24 +26,18 @@ Describe "Script Tests" -Tag 'Script' {
                 $scriptFile = $SourceFile
             }
 
-            $scriptProperties = (Get-ChildItem -Path $scriptFile)
+            $scriptProperties = (Get-Item -Path $scriptFile)
 
             Context "Script : $($scriptProperties.Name) at $($scriptProperties.Directory)" {
 
-                $fileContent = Get-Content -Path $scriptFile -Raw
+                # This needs to get the content of the file or the content of the function inside the file
+                $fileContent = Get-FileContent -File $scriptFile
+
                 ($ParsedFile, $ErrorCount) = Get-ParsedContent -Content $fileContent
 
                 It "check script has valid PowerShell syntax" -TestCases @{ 'ErrorCount' = $ErrorCount } {
 
                     $ErrorCount | Should -Be 0
-
-                }
-
-                It "check script should not contain any functions" -TestCases @{ 'ParsedFile' = $ParsedFile } {
-
-                    $functionMarkerCount = (@(Get-TokenMarker -ParsedFileContent $ParsedFile -Type "keyword" -Content "function")).Count
-
-                    $functionMarkerCount | Should -BeExactly 0
 
                 }
 
@@ -191,7 +185,7 @@ Describe "Script Tests" -Tag 'Script' {
                     }
                     else {
 
-                        Set-ItResult -Skipped -Because "Extra PSScriptAnalyzer rules not found"
+                        Set-ItResult -Inconclusive -Because "Extra PSScriptAnalyzer rules not found"
 
                     }
 
@@ -203,7 +197,7 @@ Describe "Script Tests" -Tag 'Script' {
 
                     if ($importModuleTokens.Count -eq 0) {
 
-                        Set-ItResult -Skipped -Because "No Import-Module statements found"
+                        Set-ItResult -Inconclusive -Because "No Import-Module statements found"
 
                     }
 
