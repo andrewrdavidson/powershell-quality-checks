@@ -33,20 +33,9 @@ $configuration.Run.Container = $container2
 Invoke-Pester -Configuration $configuration
 
 # Test Set 3 - Multiple script file tests via searching all script in $SourcePath
-if (Test-Path -Path (Join-Path -Path $Env:TEMP -ChildPath "tmpExtraction")) {
-    $SourcePath = $SourcePath + [string](Join-Path -Path $Env:TEMP -ChildPath "tmpExtraction")
+if (Test-Path -Path $FunctionExtractPath) {
+    $SourcePath = $SourcePath + $FunctionExtractPath
 }
 $container3 = New-PesterContainer -Path ".\Quality\Script.Tests.ps1" -Data @{ SourcePath = $SourcePath; SonarQubeRules = $SonarQubeRules }
 $configuration.Run.Container = $container3
-Invoke-Pester -Configuration $configuration
-
-# Test Set 4 - Pass in a single script file
-$SourceFile = "C:\source\Common.PesterValidation\TestFiles\TestScript.ps1"
-$container4 = New-PesterContainer -Path ".\Quality\Script.Tests.ps1" -Data @{ SourceFile = $SourceFile; SonarQubeRules = $SonarQubeRules }
-$configuration.Run.Container = $container4
-Invoke-Pester -Configuration $configuration
-
-$SourceFile = ".\TestFiles\TestScript.ps1"
-$container5 = New-PesterContainer -Path ".\Quality\Script.Tests.ps1" -Data @{ SourceFile = $SourceFile; SonarQubeRules = $SonarQubeRules }
-$configuration.Run.Container = $container5
 Invoke-Pester -Configuration $configuration
