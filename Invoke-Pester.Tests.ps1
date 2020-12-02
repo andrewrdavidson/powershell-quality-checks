@@ -13,6 +13,7 @@ $SonarQubeRules = '..\ScriptAnalyzerRules\Indented.CodingConventions'
 
 # Location of Extracted Module Functions
 $FunctionExtractPath = Join-Path -Path $Env:TEMP -ChildPath "tmpExtraction"
+$FunctionExtractPath = Join-Path -Path $FunctionExtractPath -ChildPath (New-Guid).Guid
 
 # Default Pester Parameters
 $configuration = [PesterConfiguration]::Default

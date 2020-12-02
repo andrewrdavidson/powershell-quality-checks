@@ -27,6 +27,18 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>FunctionExtractPath</maml:name>
+          <maml:Description>
+            <maml:para>A string Path containing the full path to the extraction folder</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -34,6 +46,18 @@
         <maml:name>Path</maml:name>
         <maml:Description>
           <maml:para>A string Path containing the full file name and path to the module</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>FunctionExtractPath</maml:name>
+        <maml:Description>
+          <maml:para>A string Path containing the full path to the extraction folder</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
